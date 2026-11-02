@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lead Gen"><meta name="theme-color" content="#0b0b0c">
+<title>Lead Gen</title><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#0b0b0c;--sf:#131315;--bd:#252528;--tx:#ededee;--mu:#85858d;--ac:#d92d27;--ok:#3ba776;--wa:#c9972b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f7f7f8;--sf:#fff;--bd:#e4e4e8;--tx:#141416;--mu:#6d6d76;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f7f7f8;--sf:#fff;--bd:#e4e4e8;--tx:#141416;--mu:#6d6d76;color-scheme:light}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;padding-bottom:76px;-webkit-font-smoothing:antialiased}
+main{max-width:620px;margin:0 auto;padding:0 18px 24px}
+header{display:flex;align-items:center;gap:9px;padding:18px 0 6px;font-weight:700;letter-spacing:.14em;font-size:12px}
+header i{width:9px;height:9px;background:var(--ac);display:block}
+h1{font-size:24px;font-weight:650;letter-spacing:-.02em;margin:14px 0 4px}
+.sub{color:var(--mu);margin:0 0 18px}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mu);margin:20px 0 8px;display:block}
+input,select{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:12px;font:inherit;outline:0}
+input:focus{border-color:var(--mu)}
+input[type=range]{padding:0;accent-color:var(--ac);background:none;border:0}
+.seg{display:flex;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.seg button{flex:1;background:var(--sf);color:var(--mu);border:0;border-right:1px solid var(--bd);padding:11px 4px;font:inherit;font-size:13px;cursor:pointer}
+.seg button:last-child{border:0}.seg button.on{background:var(--tx);color:var(--bg);font-weight:600}
+.btn{display:block;width:100%;background:var(--ac);color:#fff;border:0;border-radius:6px;padding:14px;font:inherit;font-weight:600;cursor:pointer;margin-top:24px}
+.btn.line{background:none;border:1px solid var(--bd);color:var(--tx);margin:0;width:auto;padding:8px 12px;font-size:13px;font-weight:500}
+.row{display:flex;gap:8px;align-items:center}.between{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.item{padding:16px 0;border-bottom:1px solid var(--bd)}
+.nm{font-weight:600;font-size:15px}
+a{color:var(--tx);text-decoration:none;border-bottom:1px solid var(--mu)}
+.mu{color:var(--mu);font-size:13px}.num{font-variant-numeric:tabular-nums;font-weight:650;font-size:20px;text-align:right}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;background:var(--mu)}
+.bar{height:2px;background:var(--bd)}.bar i{display:block;height:100%;width:0;background:var(--ac)}
+pre{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:14px;white-space:pre-wrap;word-break:break-word;font:12px/1.6 ui-monospace,Menlo,Consolas,monospace;max-height:55vh;overflow:auto;margin:12px 0}
+.note{color:var(--mu);font-size:12px;border-top:1px solid var(--bd);padding-top:12px;margin-top:20px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--bd);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;background:none;border:0;color:var(--mu);padding:10px 0 8px;font:500 10px inherit;font-family:inherit;letter-spacing:.04em;cursor:pointer}
+nav button.on{color:var(--tx)}nav svg{display:block;margin:0 auto 3px;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+</style></head><body>
+<main><header><i></i>LEAD GEN</header><div id="app"></div></main>
+<nav id="nav"></nav>
+<script>
+var STG=["New","DM sent","Replied","Call booked","Won"],TYP=["D2C brand","Restaurant","Jewellery","Marketing agency","Skincare","Snacks"];
+var S={tab:"search",stage:"New",scope:"last",acc:{g:false,ig:false},leads:[],last:[],hist:[],run:null,f:{n:30,type:"D2C brand",city:"Kolkata",pl:["Instagram","YouTube","Google"],must:["handle"],minF:200,maxF:10000}};
+var PH="46e9ca596228f18f902bf045d7298fda8cf09d98224cea7bf9ad347c126a0ed8";S.user=null;S.ready=false;S.err="";try{S.unlocked=localStorage.getItem("lg_u")===PH}catch(e){S.unlocked=false}
+var _st;function save(){clearTimeout(_st);_st=setTimeout(function(){if(window.FB&&S.user)FB.save({leads:S.leads,last:S.last,hist:S.hist,f:S.f})},700)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}function rnd(a,b){return Math.floor(a+Math.random()*(b-a+1))}
+var A=["Aura","Nova","Zest","Urban","Royal","Pure","Desi","Glow","Rustic","Velvet","Nest","Indi","Luxe","Amber","Saffron","Kora","Terra","Mira"],
+W=["Static posts only, no video ads","Reels have poor lighting and no hook","Posts daily but no UGC-style ads","Running ads with weak creative","No reels in the last 30 days","Product shots only, no people or story"];
+var PO={agency:["Media","Digital","Creatives","Growth Labs","Marketing"],food:["Kitchen","Bites","Biryani House","Cafe","Eats"],jewel:["Jewels","Diamonds","Gems","Jewellers"],skin:["Skin","Botanicals","Glow Labs","Skincare"],snack:["Snacks","Makhana Co","Crunch","Foods"],d2c:["Naturals","Labs","Co","Essentials","Studio","Collective","Wellness","Home"]};
+function nmFor(t){t=(t||"").toLowerCase();var k=/agency|market/.test(t)?"agency":/restaurant|food|cafe|biryani/.test(t)?"food":/jewel|diamond/.test(t)?"jewel":/skin|beauty/.test(t)?"skin":/snack|makhana/.test(t)?"snack":"d2c",nm,i=0;do{nm=pick(A)+" "+pick(PO[k]);i++}while(i<40&&S.leads.some(function(l){return l.name===nm}));return nm}
+function mk(){var f=S.f,nm=nmFor(f.type),h=nm.toLowerCase().replace(/ /g,"_")+rnd(1,99),src=pick(f.pl.length?f.pl:["Instagram"]),wk=pick(W),d=h.replace(/_/g,"");
+ return{id:Date.now()+"-"+Math.random().toString(36).slice(2,7),name:nm,handle:"@"+h,niche:f.type,city:f.city,src:src,fol:rnd(f.minF,Math.max(f.minF+1,f.maxF)),score:rnd(30,98),weak:wk,
+ email:(f.must.indexOf("email")>-1||Math.random()>.4)?"hello@"+d+".in":"",site:(f.must.indexOf("site")>-1||Math.random()>.5)?d+".in":"",stage:"New",
+ dm:"Hi! Saw "+nm+" on "+src+". "+wk+". I make AI + UGC video ads that fix exactly this. Can I send a free sample?"}}
+var REAL=[["Aretto","Pune","Kids footwear","kids footwear shoes","Kids footwear brand with expandable shoes. Founder Satyajit Mittal.","wearetto.com"],["ModVilla","Pune","Home decor","home decor lifestyle handcrafted","Handcrafted, customisable home decor brand in Mundhwa. Founder Ankita Agarwal."],["Karagiri","Pune","Clothing","fashion clothing apparel","Clothing D2C brand headquartered in Pune."],["Seniority","Pune","Health and lifestyle","health lifestyle seniors ecommerce","Health and lifestyle products for senior citizens. Founders Ayush Agrawal and Tapan Mishra.","seniority.in"],["Label Shaurya Sanadhya","Pune","Women's fashion","fashion ethnic western womenswear","Women's ethnic and western wear label by Pune creator Shaurya Sanadhya Tulshyan."],["Dot & Key","Kolkata","Skincare","skincare beauty serums bodycare","Skincare and beauty brand: serums, masks, sunscreens, bodycare."],["Nestasia","Kolkata","Home decor","home decor tableware lifestyle","Home decor, tableware and lifestyle brand. Founders Aditi Murarka Agarwal and Anurag Agarwal."],["Simaaya","Kolkata","Men's fashion","fashion clothing apparel menswear","Men's fashion and apparel brand with a 30+ year legacy."],["Gavin Paris","Kolkata","Fashion","fashion clothing apparel","High-street fashion brand, featured on Shark Tank India S2. Founder Kishor Jairamka."],["House of Pehr","Kolkata","Jewellery","jewellery jewelry silver","Handcrafted silver jewellery brand. Founders Shrutika and Siddhika Jatia."],["Navvi.in","Kolkata","Women's fashion","fashion ethnic womenswear","Contemporary ethnic womenswear. Founder Vidhi Poddar.","navvi.in"],["Scoopski","Kolkata","Food and dessert","food dessert ice cream","Artisanal ice-cream and desserts, run by a mother-daughter duo."],["The Baklava Box","Kolkata","Food and sweets","food sweets gifting","Eggless Turkish-Indian sweets for gifting. Founder Vatsal Agarwal."],["The House of Ganges","Kolkata","Tea","food beverage tea","Premium loose-leaf tea (Darjeeling, Assam, Nilgiri). Founders Riya and Ricky Osatwal."],["Uptownie","Kolkata","Women's fashion","fashion clothing womenswear","Women's fashion brand serving 10 lakh+ customers online. Founder Priyanka Agarwal."],["Rosada","Kolkata","Kids and baby","kids baby accessories","Personalised kids accessories and baby products; on Shark Tank India S5."],["Country Bean","Kolkata","Coffee","food beverage coffee","D2C flavoured coffee brand launched in 2017."],["Gappu","Kolkata","Musical products","music instruments","Niche musical products brand, appeared on Shark Tank India S5."]].map(function(a){return{n:a[0],ci:a[1],c:a[2],tags:a[3],note:a[4],w:a[5]||""}});
+var REAL2=[["Pune Props","propspune94",1791,"Pune","Baby products","baby kids props handmade","Handmade baby photo props for newborn shoots, shipping across India.","puneprops.co.in"],["Hands on Creation","handsoncreation__",445,"Pune","Home decor","home decor handpainted wood gifts","Hand-painted boxes, trays and candle holders by Mitali Deshpande. Orders by DM."],["Kusha Handmade Jewellery","kusha.co.in",2016,"Pune","Jewellery","jewellery jewelry handmade beads oxidized","Handcrafted beaded and oxidized jewellery."],["Rent Jewellery Pune","rentjewellery",891,"Pune","Jewellery","jewellery jewelry rental bridal","Rental bridal, wedding and fashion jewellery."],["Athlete Sportswear","athlete_in",525,"Pune","Clothing","clothing fashion apparel sportswear","Premium clothing brand from Pune, around since 1971."],["Parmar Jewellers","parmarjeweller",1018,"Pune","Jewellery","jewellery jewelry gold silver diamond","Gold, silver and diamond jeweller."],["Gold Mart Jewellers","goldmartjeweller",8416,"Pune","Jewellery","jewellery jewelry gold diamond bridal","Hallmarked gold and diamond jeweller with bridal sets."],["Sia Boutique Pune","siaboutiquepune",11000,"Pune","Clothing","clothing fashion apparel boutique","Casual and festive wear boutique, Marketyard and Rasta Peth."],["Krishna Imitation Jewellery","krishna.i.jewellery.5",17000,"Pune","Jewellery","jewellery jewelry imitation wholesale","Imitation jewellery maker selling wholesale."],["Sweet Home Bakery","sweethomebakerybysurabhi",2117,"Pune","Food and bakery","food bakery cakes homemade","Home baker: cakes, cupcakes, brownies and cookies."],["Isva Candles","isva_candles",256,"Pune","Candles","candles home decor homemade soy","Hand-poured soy candles."],["Saima Bakery Pune","saimabakerypune",2190,"Pune","Food and bakery","food bakery vegan eggless cakes","100% vegan and eggless bakery with custom cakes (NIBM Road)."],["Golden Bakery","goldenbakery.in",562,"Pune","Food and bakery","food bakery cakes","Cake delivery across Pune, custom cakes."],["Baker's Basket","bakersbasketofficial",1727,"Pune","Food and bakery","food bakery cakes cookies","Pune bakery since 1985: cakes, cookies, desserts and breads."],["Baking Someone Happy","bakingsomeonehappy",7591,"Pune","Food and bakery","food bakery eggless homemade","Eggless homemade baker (Mansi Mehta)."],["Flour Story","flourstorypune",2030,"Pune","Food and bakery","food bakery coffee desserts","European desserts, breads and coffee bar in Magarpatta City."],["Classic Candles","classiccandles_ind",655,"Pune","Candles","candles home decor hampers","Mother-daughter small business: customisable candles and hampers, ships across India."],["Kolkata Garments","kolkata.garments",270,"Kolkata","Clothing","clothing fashion apparel kids wear","Wholesale and retail kids wear and ladies suits. Orders by DM."],["Kolkata New Market Online","kolkata.new.market.online",199,"Kolkata","Jewellery and clothing","clothing fashion jewellery jewelry apparel","Sells jewellery and clothes online. Orders by DM."],["DRESS CODE","dresscode_kolkata",9666,"Kolkata","Clothing","clothing fashion apparel womenswear","Women's apparel store shipping pan-India. Orders by DM."],["Devi Designs","devidesigns.kolkata",2072,"Kolkata","Clothing","clothing fashion apparel indo-western","Traditional and indo-western garments. B2B inquiries."],["Masakalli","masakalli_kolkata",8033,"Kolkata","Clothing","clothing fashion ethnic handmade","Handmade ethnic wear label."],["Joyee","joyee.kolkata",21000,"Kolkata","Clothing","clothing fashion sarees silk","Silk and cotton sarees since 2020, ships globally."]].map(function(a){return{n:a[0],h:a[1],f:a[2],ci:a[3],c:a[4],tags:a[5],note:a[6],w:a[7]||""}});
+function poolFor(f){var q=(f.type||"").toLowerCase().split(/[^a-z0-9]+/).filter(function(w){return w&&["brand","brands","business","d2c","and","the"].indexOf(w)<0}),c=(f.city||"").toLowerCase().trim();return REAL2.filter(function(b){var cityOk=!c||/india|all/.test(c)||b.ci.toLowerCase()===c,hay=(b.c+" "+b.tags).toLowerCase(),typeOk=!q.length||q.some(function(w){return hay.indexOf(w)>-1});return cityOk&&typeOk&&b.f>=f.minF&&b.f<=f.maxF})}
+function mkReal(b){return{id:Date.now()+"-"+Math.random().toString(36).slice(2,7),name:b.n,handle:"@"+b.h,niche:b.c,city:b.ci,src:"Instagram",fol:b.f,score:0,weak:b.note,email:"",site:b.w,stage:"New",dm:"Hi! I came across "+b.n+" and loved the brand. I make AI + UGC video ads for D2C brands. Can I send a free sample reel for "+b.n+"?"}}
+function ig(l){return l.handle?"https://www.instagram.com/"+l.handle.slice(1)+"/":"https://www.google.com/search?q="+encodeURIComponent('site:instagram.com "'+l.name+'"')}
+function link(l){return l.src==="Google"?"https://www.google.com/search?q="+encodeURIComponent(l.name+" "+l.city):l.src==="YouTube"?"https://www.youtube.com/results?search_query="+encodeURIComponent(l.name):ig(l)}
+function tier(s){return s>=75?"var(--ac)":s>=50?"var(--wa)":"var(--mu)"}
+function fmt(n){return n>=1000?(n/1000).toFixed(1).replace(".0","")+"k":n}
+function syncF(){var g=function(i){return document.getElementById(i)};if(g("ci")&&g("ty")){S.f.type=g("ty").value;S.f.city=g("ci").value;S.f.n=+g("n").value;S.f.minF=+g("a").value;S.f.maxF=+g("b").value}}
+function go(t){syncF();S.tab=t;render()}
+function tg(k,v){syncF();var a=S.f[k],i=a.indexOf(v);if(i>-1)a.splice(i,1);else a.push(v);save();render()}
+function sv(k,v){S[k]=v;render()}
+function acc(k){S.acc[k]=!S.acc[k];save();render()}
+function run(){var f=S.f;f.n=+document.getElementById("n").value;f.type=document.getElementById("ty").value||"Business";f.city=document.getElementById("ci").value||"India";
+ f.minF=+document.getElementById("a").value||0;f.maxF=+document.getElementById("b").value||100000;if(f.minF>f.maxF){var q=f.minF;f.minF=f.maxF;f.maxF=q}save();S.last=[];if(S.run)S.run.d=true;S.run={t:f.n,n:0,c:{},p:false,d:false,feed:[],pool:[]};S.run.pool=poolFor(f);S.run.t=Math.min(f.n,S.run.pool.length);if(!S.run.t)S.run.d=true;S.tab="progress";render();tick()}
+function tick(r){r=r||S.run;if(!r||r.d||r!==S.run)return;if(!r.p&&r.n<r.t){var b=r.pool[r.n],ex=S.leads.filter(function(x){return x.name===b.n})[0],l=ex||mkReal(b);if(!ex)S.leads.unshift(l);S.last.push(l.id);r.n++;r.c[l.src]=(r.c[l.src]||0)+1;r.feed.unshift(l);r.feed=r.feed.slice(0,5);
+ if(r.n>=r.t){r.d=true;S.hist.unshift({d:new Date().toLocaleDateString(),t:S.f.type,c:S.f.city,n:r.t});S.hist=S.hist.slice(0,8)}save();if(S.tab==="progress")render()}
+ if(!r.d)setTimeout(function(){tick(r)},280)}
+function pause(){S.run.p=!S.run.p;render()}function stop(){S.run.d=true;if(S.run.n){S.hist.unshift({d:new Date().toLocaleDateString(),t:S.f.type,c:S.f.city,n:S.run.n});S.hist=S.hist.slice(0,8);save()}render()}
+function byId(id){return S.leads.filter(function(x){return x.id===id})[0]}
+function next(id){var l=byId(id);l.stage=STG[Math.min(STG.indexOf(l.stage)+1,4)];save();render()}
+function dm(id){cp(byId(id).dm)}
+function cp(t){try{navigator.clipboard.writeText(t).then(function(){toast("Copied")},function(){toast("Select the text and copy")})}catch(e){toast("Select the text and copy")}}
+function toast(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:6px;font-size:13px;z-index:9";document.body.appendChild(d);setTimeout(function(){d.remove()},1400)}
+function scoped(){var L=S.scope==="last"&&S.last.length?S.leads.filter(function(l){return S.last.indexOf(l.id)>-1}):S.leads;return L.slice().sort(function(a,b){return b.score-a.score})}
+function report(){var L=scoped(),t="LEAD GEN REPORT\n"+new Date().toLocaleDateString()+" | "+L.length+" leads\n\n";
+ L.forEach(function(l,i){t+=(i+1)+". "+l.name+" ("+l.handle+")\nLink: "+link(l)+"\nNiche: "+l.niche+" | City: "+l.city+" | Followers: "+fmt(l.fol)+"\nAbout: "+l.weak+"\nEmail: "+(l.email||"not collected")+(l.site?" | Website: https://"+l.site:"")+"\nStatus: "+l.stage+"\n\n"});return t}
+function wipe(){S.leads=[];S.last=[];S.hist=[];save();render()}
+function segs(a,cur,fn){return'<div class="seg">'+a.map(function(x){return'<button class="'+(cur(x)?'on':'')+'" onclick="'+fn(x)+'">'+x+'</button>'}).join("")+'</div>'}
+function vSearch(){var f=S.f;return'<h1>New search</h1><p class="sub">Set the target. Lead Gen searches and scores for you.</p>'+
+ (S.acc.g&&S.acc.ig?'':'<p class="mu">Accounts not connected yet. Connect them in Accounts.</p>')+
+ '<span class="lbl">Leads wanted &middot; <b id="nv" style="color:var(--tx)">'+f.n+'</b></span><input id="n" type="range" min="10" max="200" step="10" value="'+f.n+'" oninput="document.getElementById(\'nv\').textContent=this.value">'+
+ '<span class="lbl">Business type</span><input id="ty" list="tl" value="'+esc(f.type)+'"><datalist id="tl">'+TYP.map(function(t){return'<option value="'+t+'">'}).join("")+'</datalist>'+
+ '<span class="lbl">City or region</span><input id="ci" value="'+esc(f.city)+'">'+
+ '<span class="lbl">Platforms</span>'+segs(["Instagram","YouTube","Google"],function(x){return f.pl.indexOf(x)>-1},function(x){return"tg('pl','"+x+"')"})+
+ '<span class="lbl">Must have</span>'+segs(["handle","email","site"],function(x){return f.must.indexOf(x)>-1},function(x){return"tg('must','"+x+"')"})+
+ '<span class="lbl">Followers range</span><div class="row"><input id="a" type="number" value="'+f.minF+'"><input id="b" type="number" value="'+f.maxF+'"></div>'+
+ '<button class="btn" onclick="run()">Find leads</button>'+
+ (S.hist.length?'<span class="lbl">Recent</span>'+S.hist.map(function(h){return'<div class="item"><b>'+esc(h.t)+'</b>, '+esc(h.c)+'<div class="mu">'+h.d+' &middot; '+h.n+' leads</div></div>'}).join(""):"")}
+function vProgress(){var r=S.run;if(!r)return'<h1>Progress</h1><p class="sub">No search running.</p>';
+ return'<h1>'+(r.d?'Complete':'Searching')+'</h1><p class="sub num" style="text-align:left;font-size:34px;margin:6px 0 12px">'+r.n+' <span class="mu" style="font-size:16px">/ '+r.t+'</span></p><div class="bar"><i style="width:'+Math.round(r.n/(r.t||1)*100)+'%"></i></div>'+
+ (r.t?(r.t<S.f.n?'<p class="mu">Only '+r.t+' real leads in the test list match, not '+S.f.n+'.</p>':''):'<p class="mu">No real leads in the test list match. Widen the follower range, or try Pune or Kolkata.</p>')+'<p class="mu">'+Object.keys(r.c).map(function(k){return k+' '+r.c[k]}).join(" &middot; ")+'</p>'+
+ (r.d?'<button class="btn" onclick="go(\'leads\')">View leads</button>':'<div class="row" style="margin:14px 0"><button class="btn line" onclick="pause()">'+(r.p?'Resume':'Pause')+'</button><button class="btn line" onclick="stop()">Stop</button></div>')+
+ r.feed.map(function(l){return'<div class="item"><span class="nm">'+esc(l.name)+'</span> <span class="mu">'+l.handle+' &middot; '+l.src+'</span></div>'}).join("")}
+function row(l,showNext,i){return'<div class="item"><div class="between"><div><div class="nm">'+(i?i+'. ':'')+esc(l.name)+'</div><a href="'+ig(l)+'" target="_blank" rel="noopener noreferrer">'+(l.handle?esc(l.handle):'Find on Instagram')+' &#8599;</a>'+
+ '<div class="mu" style="margin-top:6px">'+fmt(l.fol)+(l.src==='YouTube'?' subscribers (':' followers (')+(l.fol<2000?'small':l.fol<10000?'mid':'large')+') &middot; '+esc(l.niche)+' &middot; '+esc(l.city)+' &middot; '+esc(l.src||'')+'</div></div></div>'+
+ '<div style="margin:8px 0">'+esc(l.weak)+'</div><div class="mu">'+(l.email?esc(l.email):'No email found')+(l.site?' &middot; <a href="https://'+l.site+'" target="_blank" rel="noopener noreferrer">'+l.site+'</a>':'')+'</div>'+
+ '<div class="row" style="margin-top:12px"><button class="btn line" onclick="dm(\''+l.id+'\')">Copy DM</button>'+(l.stage!=="Won"?'<button class="btn line" onclick="next(\''+l.id+'\')">'+(showNext?'Move to '+STG[STG.indexOf(l.stage)+1]:(l.stage==="New"?'Mark DM sent':l.stage))+'</button>':'')+'</div></div>'}
+function vLeads(){var L=scoped();return'<h1>Leads</h1><p class="sub">'+L.length+' shown &middot; '+S.leads.length+' saved in total</p>'+segs(["Latest search","All saved"],function(x){return(x==="All saved")===(S.scope==="all")},function(x){return"sv('scope','"+(x==="All saved"?"all":"last")+"')"})+(L.length?L.map(function(l,i){return row(l,false,i+1)}).join("")+'<div style="margin-top:18px"><button class="btn line" onclick="wipe()">Clear all</button></div>':'<p class="mu" style="margin-top:16px">No leads yet.</p>')}
+function vPipe(){var c=S.leads.filter(function(l){return l.stage===S.stage});return'<h1>Pipeline</h1><p class="sub">Move leads forward as you contact them.</p><div class="seg" style="overflow-x:auto">'+STG.map(function(s){return'<button class="'+(S.stage===s?'on':'')+'" style="white-space:nowrap;padding:11px 10px" onclick="sv(\'stage\',\''+s+'\')">'+s+' '+S.leads.filter(function(l){return l.stage===s}).length+'</button>'}).join("")+'</div>'+(c.length?c.slice(0,40).map(function(l,i){return row(l,true,i+1)}).join(""):'<p class="mu" style="margin-top:16px">Nothing here.</p>')}
+function vReport(){var t=report();return'<h1>Report</h1><p class="sub">Plain text with every account and its link. Paste it into Notes, Docs or WhatsApp.</p>'+
+ segs(["Latest search","All leads"],function(x){return(x==="All leads")===(S.scope==="all")},function(x){return"sv('scope','"+(x==="All leads"?"all":"last")+"')"})+'<pre id="rp">'+esc(t)+'</pre><button class="btn" style="margin-top:4px" onclick="cp(report())">Copy report</button>'}
+function vAcc(){return'<h1>Account</h1><p class="sub">Signed in. Your leads are saved to your own private space.</p><div class="item"><div class="nm">'+esc(S.user.name||"")+'</div><div class="mu">'+esc(S.user.email||"")+'</div></div><div class="item"><button class="btn line" onclick="FB.out()">Sign out</button></div><p class="note">Search runs on the test list for now. Live web search is the next step.</p>'}
+function vLogin(){return'<h1>Sign in</h1><p class="sub">Use your Google account. Your leads stay private to you and sync across your phones.</p><button class="btn" onclick="window.FB&&FB.signIn()">Continue with Google</button>'+(S.err?'<p class="note" style="color:var(--ac)">'+esc(S.err)+'</p>':'')}
+function hex(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
+function unlock(){var v=(document.getElementById("pw").value||"").trim().toUpperCase();crypto.subtle.digest("SHA-256",new TextEncoder().encode(v)).then(function(b){if(hex(b)===PH){S.unlocked=true;try{localStorage.setItem("lg_u",PH)}catch(e){}S.err=""}else{S.err="Wrong password"}render()})}
+function vLock(){return'<h1>Password</h1><p class="sub">Enter the Lead Gen password.</p><input id="pw" type="password" placeholder="Password" autocomplete="off"><button class="btn" onclick="unlock()">Unlock</button>'+(S.err?'<p class="note" style="color:var(--ac)">'+esc(S.err)+'</p>':'')}
+function render(){var nav=document.getElementById("nav");if(!S.unlocked){document.getElementById("app").innerHTML=vLock();nav.innerHTML="";return}if(!S.ready){document.getElementById("app").innerHTML='<p class="mu" style="margin-top:40px">Loading...</p>';nav.innerHTML="";return}if(!S.user){document.getElementById("app").innerHTML=vLogin();nav.innerHTML="";return}renderMain()}
+function renderMain(){document.getElementById("app").innerHTML=({search:vSearch,progress:vProgress,leads:vLeads,pipe:vPipe,report:vReport,acc:vAcc})[S.tab]();
+ var I={search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/>',leads:'<path d="M4 6h16M4 12h16M4 18h10"/>',pipe:'<path d="M5 4v16M12 4v10M19 4v6"/>',report:'<path d="M7 3h7l4 4v14H7zM14 3v4h4"/>',acc:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>'},N=[["search","Search"],["leads","Leads"],["pipe","Pipeline"],["report","Report"],["acc","Account"]];
+ document.getElementById("nav").innerHTML=N.map(function(n){var on=S.tab===n[0]||(S.tab==="progress"&&n[0]==="search");return'<button class="'+(on?'on':'')+'" onclick="go(\''+n[0]+'\')"><svg viewBox="0 0 24 24">'+I[n[0]]+'</svg>'+n[1]+'</button>'}).join("")}
+S.cfg={key:""};
+function parseF(t){t=t||"";var m=/([0-9][0-9.,]*)\s*([KkMm]?)\+?\s*(?:Followers?|Subscribers?)\b/i.exec(t)||/Followers?\s*[:\-]\s*([0-9][0-9.,]*)\s*([KkMm]?)/i.exec(t);if(!m)return null;var n=parseFloat(m[1].replace(/,/g,""));if(isNaN(n))return null;var u=m[2].toLowerCase();return Math.round(u==="k"?n*1e3:u==="m"?n*1e6:n)}
+function queries(f){var t=(f.type||"").replace(/d2c|brands?/ig,"").trim()||"brand",c=f.city&&!/^(india|all)$/i.test(f.city.trim())?'"'+f.city.trim()+'" ':"";
+ return['site:instagram.com '+c+t+' "Followers"','site:instagram.com '+c+t+' "DM to order"','site:instagram.com '+c+t+' shop "shipping"','site:instagram.com '+c+t+' brand "Followers" "Posts"','site:instagram.com '+c+t+' online store order']}
+async function liveRun(){var f=S.f,r=S.run,qs=queries(f),used=0,seen={};S.leads.forEach(function(l){seen[l.handle.toLowerCase()]=1});
+ var cityL=/^(india|all)?$/i.test((f.city||"").trim())?"":f.city.trim().toLowerCase();
+ outer:for(var p=1;p<=3;p++){for(var qi=0;qi<qs.length;qi++){
+  if(r.d||r.n>=r.t||used>=12)break outer;
+  var j;try{var res=await fetch("https://google.serper.dev/search",{method:"POST",headers:{"X-API-KEY":S.cfg.key,"Content-Type":"application/json"},body:JSON.stringify({q:qs[qi],gl:"in",num:10,page:p})});
+   if(!res.ok){r.err="Search API error "+res.status+(res.status===401||res.status===403?" (check your key)":"");break outer}j=await res.json()}catch(e){r.err="The browser blocked the search request, so this needs the server version.";break outer}
+  used++;r.calls=used;var it=j.organic||[];
+  for(var k=0;k<it.length&&r.n<r.t;k++){var o=it[k],m=/instagram\.com\/([A-Za-z0-9._]+)\/?(?:\?.*)?$/.exec(o.link||"");
+   if(!m||/^(p|reel|reels|explore|tags|stories|accounts|tv|directory|about)$/i.test(m[1]))continue;
+   var h="@"+m[1].toLowerCase();if(seen[h])continue;
+   var tx=(o.title||"")+" "+(o.snippet||""),fol=parseF(JSON.stringify(o));
+   if(fol==null){r.skip++;r.dbg=r.dbg||[];if(r.dbg.length<2)r.dbg.push((o.title||"")+" | "+(o.snippet||"").slice(0,150));continue}
+   if(fol<f.minF||fol>f.maxF){r.range++;continue}
+   if(cityL&&tx.toLowerCase().indexOf(cityL)<0){r.city++;continue}
+   seen[h]=1;var sn=o.snippet||"",nm=(o.title||"").split(" (@")[0].replace(/ . Instagram.*$/,"").trim()||m[1],bio=(sn.split(/on Instagram:?/i)[1]||sn).replace(/^[\s"]+|[\s"]+$/g,"").slice(0,160);
+   var l={id:Date.now()+"-"+Math.random().toString(36).slice(2,7),name:nm,handle:"@"+m[1],niche:f.type,city:f.city,src:"Instagram",fol:fol,score:0,weak:bio,email:"",site:"",stage:"New",dm:"Hi! I came across "+nm+" on Instagram and loved the brand. I make AI + UGC video ads for brands like yours. Can I send a free sample reel for "+nm+"?"};
+   S.leads.unshift(l);S.last.push(l.id);r.n++;r.c.Instagram=(r.c.Instagram||0)+1;r.feed.unshift(l);r.feed=r.feed.slice(0,5);save()}
+  if(S.tab==="progress")render()}}
+ r.d=true;if(r.n){S.hist.unshift({d:new Date().toLocaleDateString(),t:f.type,c:f.city,n:r.n});S.hist=S.hist.slice(0,8)}save();render()}
+function run(){var f=S.f,g=function(i){return document.getElementById(i)};f.n=+g("n").value;f.type=g("ty").value||"brand";f.city=g("ci").value||"India";f.minF=+g("a").value||0;f.maxF=+g("b").value||100000;if(f.minF>f.maxF){var q=f.minF;f.minF=f.maxF;f.maxF=q}save();
+ if(!(S.cfg&&S.cfg.key)){S.tab="acc";render();toast("Add your search API key first");return}
+ if(S.run)S.run.d=true;S.last=[];S.run={t:f.n,n:0,c:{},p:false,d:false,feed:[],calls:0,skip:0,range:0,city:0,err:""};S.tab="progress";render();liveRun()}
+function vSearch(){var f=S.f;return'<h1>New search</h1><p class="sub">Live search of Instagram and YouTube. Every result is a real account.</p>'+((S.cfg&&(S.cfg.key||S.cfg.yt))?'<p class="mu">Searching: '+[(S.cfg.key?'Instagram':''),(S.cfg.yt?'YouTube':'')].filter(Boolean).join(' + ')+'</p>':'<p class="note" style="color:var(--ac)">Add a search key in Account first.</p>')+
+ '<span class="lbl">Leads wanted &middot; <b id="nv" style="color:var(--tx)">'+f.n+'</b></span><input id="n" type="range" min="10" max="100" step="10" value="'+Math.min(f.n,100)+'" oninput="document.getElementById(\'nv\').textContent=this.value">'+
+ '<span class="lbl">Business type</span><input id="ty" value="'+esc(f.type)+'" placeholder="e.g. skincare, bakery, jewellery"><span class="lbl">City</span><input id="ci" value="'+esc(f.city)+'">'+
+ '<span class="lbl">Followers range</span><div class="row"><input id="a" type="number" value="'+f.minF+'"><input id="b" type="number" value="'+f.maxF+'"></div><button class="btn" onclick="run()">Find leads</button>'+
+ (S.hist.length?'<span class="lbl">Recent</span>'+S.hist.map(function(h){return'<div class="item"><b>'+esc(h.t)+'</b>, '+esc(h.c)+'<div class="mu">'+h.d+' &middot; '+h.n+' leads</div></div>'}).join(""):"")}
+function vProgress(){var r=S.run;if(!r)return'<h1>Progress</h1><p class="sub">No search running.</p>';
+ return'<h1>'+(r.d?'Complete':'Searching')+'</h1><p class="sub num" style="text-align:left;font-size:34px;margin:6px 0 12px">'+r.n+' <span class="mu" style="font-size:16px">/ '+r.t+'</span></p><div class="bar"><i style="width:'+Math.round(r.n/(r.t||1)*100)+'%"></i></div>'+
+ '<p class="mu">Searches used: '+(r.calls||0)+' Instagram, '+(r.yc||0)+' YouTube. Skipped: '+r.skip+' with no follower data, '+r.range+' outside your range, '+r.city+' from another city.</p>'+(r.dbg&&r.dbg.length&&!r.n?'<p class="mu">Sample of what Google returned: '+esc(r.dbg.join(" // "))+'</p>':'')+(r.err?'<p class="note" style="color:var(--ac)">'+esc(r.err)+'</p>':'')+
+ (r.d?(r.n<r.t&&!r.err?'<p class="mu">Finished with '+r.n+' of '+r.t+'. Widen the follower range or change the category or city.</p>':'')+'<button class="btn" onclick="go(\'leads\')">View leads</button>':'<div class="row" style="margin:14px 0"><button class="btn line" onclick="stop()">Stop</button></div>')+
+ r.feed.map(function(l){return'<div class="item"><span class="nm">'+esc(l.name)+'</span> <span class="mu">'+esc(l.handle)+' &middot; '+fmt(l.fol)+'</span></div>'}).join("")}
+function saveKey(v){S.cfg=S.cfg||{key:""};S.cfg.key=(v||"").trim();save();toast(S.cfg.key?"Key saved":"Key removed");render()}
+function vAcc(){var k=S.cfg&&S.cfg.key;return'<h1>Account</h1><p class="sub">Signed in. Your leads and settings are private to you.</p><div class="item"><div class="nm">'+esc(S.user.name||"")+'</div><div class="mu">'+esc(S.user.email||"")+'</div></div>'+
+ '<span class="lbl">Search API key (Serper)</span>'+(k?'<div class="item"><span class="mu">Key saved (ends '+esc(k.slice(-4))+')</span><div style="margin-top:10px"><button class="btn line" onclick="saveKey(\'\')">Remove key</button></div></div>':'<input id="sk" placeholder="Paste your key" autocomplete="off"><button class="btn" onclick="saveKey(document.getElementById(\'sk\').value)">Save key</button><p class="mu" style="margin-top:10px">Get a free key at serper.dev. It is stored only in your private account.</p>')+
+ '<div class="item" style="margin-top:20px"><button class="btn line" onclick="FB.out()">Sign out</button></div>'}
+function save(){clearTimeout(_st);_st=setTimeout(function(){if(window.FB&&S.user)FB.save({leads:S.leads,last:S.last,hist:S.hist,f:S.f,cfg:S.cfg||{key:""}})},700)}
+function ig(l){if(l.url)return l.url;return l.handle?"https://www.instagram.com/"+l.handle.slice(1)+"/":"https://www.google.com/search?q="+encodeURIComponent('site:instagram.com "'+l.name+'"')}
+function link(l){return ig(l)}
+function addErr(r,m){r.err=(r.err?r.err+" ":"")+m}
+function cityOf(f){return /^(india|all)?$/i.test((f.city||"").trim())?"":f.city.trim().toLowerCase()}
+function mkL(f,src,o){var l={id:Date.now()+"-"+Math.random().toString(36).slice(2,7),niche:f.type,city:f.city,src:src,score:0,stage:"New",email:"",site:""};for(var k in o)l[k]=o[k];l.dm="Hi! I came across "+l.name+" on "+src+" and loved the brand. I make AI + UGC video ads for brands like yours. Can I send a free sample reel for "+l.name+"?";return l}
+function addLead(r,l){S.leads.unshift(l);S.last.push(l.id);r.n++;r.c[l.src]=(r.c[l.src]||0)+1;r.feed.unshift(l);r.feed=r.feed.slice(0,5);save()}
+async function igSearch(r,f,seen){var qs=queries(f),used=0,cityL=cityOf(f);
+ outer:for(var p=1;p<=3;p++){for(var qi=0;qi<qs.length;qi++){
+  if(r.d||r.n>=r.t||used>=12)break outer;
+  var j;try{var res=await fetch("https://google.serper.dev/search",{method:"POST",headers:{"X-API-KEY":S.cfg.key,"Content-Type":"application/json"},body:JSON.stringify({q:qs[qi],gl:"in",num:10,page:p})});
+   if(!res.ok){addErr(r,"Instagram search error "+res.status+(res.status===401||res.status===403?" (check your Serper key).":"."));break outer}j=await res.json()}catch(e){addErr(r,"The browser blocked the Instagram search request.");break outer}
+  used++;r.calls=used;var it=j.organic||[];
+  for(var k=0;k<it.length&&r.n<r.t;k++){var o=it[k],m=/instagram\.com\/([A-Za-z0-9._]+)\/?(?:\?.*)?$/.exec(o.link||"");
+   if(!m||/^(p|reel|reels|explore|tags|stories|accounts|tv|directory|about)$/i.test(m[1]))continue;
+   var h="@"+m[1].toLowerCase();if(seen[h])continue;
+   var tx=(o.title||"")+" "+(o.snippet||""),fol=parseF(JSON.stringify(o));
+   if(fol==null){r.skip++;r.dbg=r.dbg||[];if(r.dbg.length<2)r.dbg.push((o.title||"")+" | "+(o.snippet||"").slice(0,150));continue}
+   if(fol<f.minF||fol>f.maxF){r.range++;continue}
+   if(cityL&&tx.toLowerCase().indexOf(cityL)<0){r.city++;continue}
+   seen[h]=1;var sn=o.snippet||"",nm=(o.title||"").split(" (@")[0].replace(/ . Instagram.*$/,"").trim()||m[1],bio=(sn.split(/on Instagram:?/i)[1]||sn).replace(/^[\s"]+|[\s"]+$/g,"").slice(0,160);
+   addLead(r,mkL(f,"Instagram",{name:nm,handle:"@"+m[1],fol:fol,weak:bio}))}
+  if(S.tab==="progress")render()}}}
+async function ytSearch(r,f,seen){var cityL=cityOf(f),t=(f.type||"").replace(/d2c|brands?/ig,"").trim()||"brand",c=cityL?f.city.trim():"India",qs=[t+" "+c,t+" brand "+c,t+" shop "+c],K=encodeURIComponent(S.cfg.yt);
+ for(var qi=0;qi<qs.length;qi++){if(r.d||r.n>=r.t)break;var ids=[];
+  try{var a=await fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=50&regionCode=IN&q="+encodeURIComponent(qs[qi])+"&key="+K);
+   if(!a.ok){var ej={};try{ej=await a.json()}catch(e){}addErr(r,"YouTube error "+a.status+(ej.error&&ej.error.message?": "+ej.error.message.slice(0,100):"."));return}
+   var aj=await a.json();r.yc=(r.yc||0)+1;ids=(aj.items||[]).map(function(i){return i.snippet&&i.snippet.channelId||(i.id&&i.id.channelId)}).filter(Boolean)}catch(e){addErr(r,"The browser blocked the YouTube request.");return}
+  if(!ids.length)continue;var bj;
+  try{var b=await fetch("https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&maxResults=50&id="+ids.join(",")+"&key="+K);if(!b.ok){addErr(r,"YouTube error "+b.status+".");return}bj=await b.json()}catch(e){addErr(r,"The browser blocked the YouTube request.");return}
+  var items=bj.items||[];
+  for(var k=0;k<items.length&&r.n<r.t;k++){var ch=items[k],st=ch.statistics||{},sn=ch.snippet||{};
+   if(st.hiddenSubscriberCount||st.subscriberCount==null){r.skip++;continue}
+   var fol=parseInt(st.subscriberCount,10);if(fol<f.minF||fol>f.maxF){r.range++;continue}
+   var ds=sn.description||"";if(cityL&&((sn.title||"")+" "+ds).toLowerCase().indexOf(cityL)<0){r.city++;continue}
+   var key="yt:"+ch.id;if(seen[key])continue;seen[key]=1;
+   var cu=sn.customUrl||"",url=cu.charAt(0)==="@"?"https://www.youtube.com/"+cu:"https://www.youtube.com/channel/"+ch.id,
+   em=(ds.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)||[""])[0],wb=(ds.match(/https?:\/\/(?!(?:www\.)?(?:youtube|youtu\.be|instagram|facebook|wa\.me|linktr)[^\s]*)[^\s)"]+/i)||[""])[0].replace(/^https?:\/\//,"");
+   addLead(r,mkL(f,"YouTube",{name:sn.title||cu,handle:cu.charAt(0)==="@"?cu:(sn.title||""),fol:fol,weak:ds.replace(/\s+/g," ").trim().slice(0,160),url:url,cid:ch.id,email:em,site:wb}))}
+  if(S.tab==="progress")render()}}
+async function liveAll(){var r=S.run,f=S.f,seen={};S.leads.forEach(function(l){seen[l.src==="YouTube"?"yt:"+l.cid:(l.handle||"").toLowerCase()]=1});
+ var jobs=[];if(S.cfg.key)jobs.push(igSearch(r,f,seen));if(S.cfg.yt)jobs.push(ytSearch(r,f,seen));
+ try{await Promise.all(jobs)}catch(e){addErr(r,"Unexpected error: "+(e.message||e))}
+ r.d=true;if(r.n){S.hist.unshift({d:new Date().toLocaleDateString(),t:f.type,c:f.city,n:r.n});S.hist=S.hist.slice(0,8)}save();render()}
+function stop(){S.run.d=true;render()}
+function run(){var f=S.f,g=function(i){return document.getElementById(i)};f.n=+g("n").value;f.type=g("ty").value||"brand";f.city=g("ci").value||"India";f.minF=+g("a").value||0;f.maxF=+g("b").value||100000;if(f.minF>f.maxF){var q=f.minF;f.minF=f.maxF;f.maxF=q}save();
+ if(!(S.cfg&&(S.cfg.key||S.cfg.yt))){S.tab="acc";render();toast("Add a search key first");return}
+ if(S.run)S.run.d=true;S.last=[];S.run={t:f.n,n:0,c:{},p:false,d:false,feed:[],calls:0,yc:0,skip:0,range:0,city:0,err:""};S.tab="progress";render();liveAll()}
+function saveYt(v){S.cfg=S.cfg||{key:""};S.cfg.yt=(v||"").trim();save();toast(S.cfg.yt?"Key saved":"Key removed");render()}
+function keyBox(lbl,fld,fn,hint){var k=S.cfg&&S.cfg[fld];return'<span class="lbl">'+lbl+'</span>'+(k?'<div class="item"><span class="mu">Key saved (ends '+esc(k.slice(-4))+')</span><div style="margin-top:10px"><button class="btn line" onclick="'+fn+'(\'\')">Remove key</button></div></div>':'<input id="k_'+fld+'" placeholder="Paste your key" autocomplete="off"><button class="btn" onclick="'+fn+'(document.getElementById(\'k_'+fld+'\').value)">Save key</button><p class="mu" style="margin-top:10px">'+hint+'</p>')}
+function vAcc(){return'<h1>Account</h1><p class="sub">Signed in. Your leads and settings are private to you.</p><div class="item"><div class="nm">'+esc(S.user.name||"")+'</div><div class="mu">'+esc(S.user.email||"")+'</div></div>'+keyBox("Instagram search key (Serper)","key","saveKey","Free key at serper.dev. Stored only in your private account.")+keyBox("YouTube Data API key","yt","saveYt","From Google Cloud, YouTube Data API v3. Stored only in your private account.")+'<div class="item" style="margin-top:20px"><button class="btn line" onclick="FB.out()">Sign out</button></div>'}
+render();
+setTimeout(function(){if(!S.ready){S.ready=true;S.user=null;S.err="Could not reach Firebase. Open Lead Gen from its github.io link, not inside Claude.";render()}},7000);
+</script><script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyA2dXh8FgCBDM0ejCAtyo-BbamFze71rdU",authDomain:"leadgen-be858.firebaseapp.com",projectId:"leadgen-be858",storageBucket:"leadgen-be858.firebasestorage.app",messagingSenderId:"1042141825223",appId:"1:1042141825223:web:53bada61ca1b80fef2d6e2"});
+const auth=getAuth(app),db=getFirestore(app);
+const ref=u=>doc(db,"users",u.uid,"data","main");
+window.FB={
+ async signIn(){S.err="";try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){
+  if(["auth/popup-blocked","auth/cancelled-popup-request","auth/operation-not-supported-in-this-environment"].includes(e.code)){await signInWithRedirect(auth,new GoogleAuthProvider())}
+  else if(e.code!=="auth/popup-closed-by-user"){S.err="Sign-in failed: "+(e.code||"error");render()}}},
+ out(){signOut(auth)},
+ async save(d){try{await setDoc(ref(auth.currentUser),Object.assign({},d,{updated:Date.now()}))}catch(e){toast("Could not save: "+(e.code||"error"))}}
+};
+onAuthStateChanged(auth,async u=>{
+ if(!u){S.user=null;S.leads=[];S.last=[];S.hist=[];S.cfg={key:""};S.ready=true;render();return}
+ try{const sn=await getDoc(ref(u));if(sn.exists()){const d=sn.data();S.leads=d.leads||[];S.last=d.last||[];S.hist=d.hist||[];S.f=d.f||S.f;S.cfg=d.cfg||{key:""}}}catch(e){S.err="Could not load data: "+(e.code||"")}
+ S.user={email:u.email,name:u.displayName};S.ready=true;render()});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body></html>
